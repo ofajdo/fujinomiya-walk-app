@@ -23,7 +23,7 @@ type Course = Prisma.CourseGetPayload<{
 }>;
 
 const Home = async () => {
-  const courses: Course[] = await CoursesGet();
+  const courses: Course[] = await CoursesGet().catch(() => []);
 
   return (
     <div>

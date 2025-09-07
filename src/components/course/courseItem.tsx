@@ -32,7 +32,7 @@ export function CourseItem({ course }: { course: Course }) {
     <div className="w-full flex flex-col sm:flex-row">
       <div className="grid place-items-center">
         <div className="flex justify-center sm:flex-col items-center gap-2 text-xs text-center">
-          <span className="text-blue-500 text-4xl sm:text-5xl font-bold px-2">
+          <span className="text-blue-500 text-3xl sm:text-4xl font-bold px-2">
             {course.name}
           </span>
           {course.districts}地区
@@ -71,7 +71,7 @@ export function CourseItem({ course }: { course: Course }) {
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="bg-white p-4 rounded-2xl max-w-lg w-full shadow-lg flex flex-col"
+            className="bg-white p-4 rounded-2xl max-w-lg w-full shadow-lg flex flex-col max-h-full  overflow-y-scroll"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="mb-1 p-1 text-center font-medium text-blue-900 text-xl">

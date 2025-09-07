@@ -29,7 +29,7 @@ type CourseMapProps = {
 const CourseMap: React.FC<CourseMapProps> = ({ course }) => {
   return (
     <>
-      <div className="flex-1 overflow-y-scroll h-full">
+      <div className="flex-1 overflow-y-scroll h-full md:max-w-md">
         <div className="p-1">{course && <CourseItem course={course} />}</div>
         <LocationList course={course} />
       </div>

@@ -31,7 +31,7 @@ export default async function Course({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const course: Course | null = await CourseGetById(id);
+  const course: Course | null = await CourseGetById(id).catch(() => null);
 
   return (
     <>

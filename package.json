@@ -16,6 +16,7 @@
     "leaflet": "^1.9.4",
     "next": "15.4.5",
     "next-auth": "^5.0.0-beta.29",
+    "next-nprogress-bar": "^2.4.7",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "react-icons": "^5.5.0",

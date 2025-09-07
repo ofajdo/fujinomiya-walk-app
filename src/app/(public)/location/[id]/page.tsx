@@ -8,7 +8,10 @@ export default async function Location({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const location = await LocationSerchById({ id: id });
+  const location = await LocationSerchById({ id: id }).catch(() => null);
+
+  if (!location) return <div className="p-4">見つかりませんでした。</div>;
+
   return (
     <div>
       <div className="flex gap-2 text-center p-2">

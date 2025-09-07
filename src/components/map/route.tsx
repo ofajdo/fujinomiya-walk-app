@@ -67,7 +67,7 @@ function RouteMap({ course }: { course: Course }) {
     [Number(place.latitude), Number(place.longitude)] as LatLngExpression;
 
   return (
-    <MapContainer center={route[0]} zoom={15} className="h-full w-full">
+    <MapContainer center={route[0]} zoom={17} className="h-full w-full">
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

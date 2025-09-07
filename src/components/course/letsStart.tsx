@@ -41,7 +41,7 @@ export default function LetsStart({ course }: { course: Course }) {
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="bg-white p-2 rounded-2xl max-w-lg w-full shadow-lg flex flex-col content-around items-around gap-1"
+            className="bg-white p-2 rounded-2xl max-w-lg w-full shadow-lg flex flex-col content-around items-around gap-1 max-h-full  overflow-y-scroll"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="mb-1 p-1 text-center font-medium text-blue-900 text-xl">

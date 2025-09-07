@@ -10,6 +10,9 @@ import { locationsDB } from "@/lib/localdb";
 import { useLiveQuery } from "dexie-react-hooks";
 
 import { LocationSerchById } from "@/data/locations";
+import { PostUserLocations, DeleteUserLocation } from "@/data/users";
+
+import { GetUser } from "@/actions/user";
 
 type Location = Prisma.LocationGetPayload<{
   include: {
@@ -37,22 +40,6 @@ type Course = Prisma.CourseGetPayload<{
 
 const LocationList = ({ course }: { course: Course | null }) => {
   const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
-  const [locations, setLocations] = React.useState<Location[] | null>(null);
-
-  React.useEffect(() => {
-    const fetchLocations = async () => {
-      if (!items || items.length === 0) {
-        setLocations([]);
-        return;
-      }
-      const locationPromises = items.map((item) => LocationSerchById(item));
-      const resolvedLocations = await Promise.all(locationPromises);
-      setLocations(
-        resolvedLocations.filter((loc) => loc !== null) as Location[]
-      );
-    };
-    fetchLocations();
-  }, [items]);
 
   return (
     <ol className="flex flex-col">
@@ -61,7 +48,7 @@ const LocationList = ({ course }: { course: Course | null }) => {
           <li
             key={index}
             className={`${
-              !!locations?.some((loc) => loc.id === location.id)
+              !!items?.some((loc) => loc.id === location.id)
                 ? "opacity-50 order-2"
                 : "order-1"
             }`}
@@ -70,15 +57,25 @@ const LocationList = ({ course }: { course: Course | null }) => {
               <Overview location={location}>
                 <WalkedButton
                   location={location}
-                  onWalked={() => {
-                    if (locations?.some((loc) => loc.id === location.id)) {
+                  onWalked={async () => {
+                    const user = await GetUser().catch((err) => {
+                      console.log(err);
+                      return null;
+                    });
+                    console.log(user);
+                    if (items?.some((loc) => loc.id === location.id)) {
                       locationsDB.items.delete(location.id);
+                      if (user?.id)
+                        await DeleteUserLocation({
+                          id: location.id,
+                          user: user.id,
+                        }).catch(() => null);
                     } else {
                       locationsDB.items.add({ id: location.id });
                     }
                   }}
                   walked={
-                    !!locations?.some((loc) => loc.id === location.id) || false
+                    !!items?.some((loc) => loc.id === location.id) || false
                   }
                 />
               </Overview>

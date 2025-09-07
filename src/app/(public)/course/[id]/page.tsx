@@ -12,7 +12,7 @@ export default async function Course({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const course = await CourseGetById(id);
+  const course = await CourseGetById(id).catch(() => null);
 
   if (!course) {
     return <div className="p-4">コースが見つかりませんでした。</div>;
@@ -22,6 +22,9 @@ export default async function Course({
       <div className="p-1 my-4">
         {course && <CourseItem course={course} />}
         <LetsStart course={course} />
+        <p className="text-center text-sm">
+          <Link href={`/map/${course.id}`}>マップを開く</Link>
+        </p>
       </div>
       <ol className="flex flex-col gap-4">
         {course?.locations.map((location, index) => {

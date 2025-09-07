@@ -21,7 +21,7 @@ type Course = Prisma.CourseGetPayload<{
 }>;
 
 const Course = async () => {
-  const courses: Course[] = await CoursesGet();
+  const courses: Course[] = await CoursesGet().catch(() => []);
 
   return (
     <div className="text-center">
