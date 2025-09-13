@@ -1,13 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  MapContainer,
-  Marker,
-  Polyline,
-  Popup,
-  TileLayer,
-} from "react-leaflet";
+import React from "react";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
 
@@ -24,13 +18,6 @@ type Course = Prisma.CourseGetPayload<{
   };
 }>;
 
-const currentLocationIcon = L.divIcon({
-  html: ``,
-  className: "bg-blue-600 w-[18px] h-[18px] rounded-full border-2 border-white",
-  iconSize: [18, 18],
-  iconAnchor: [9, 9],
-});
-
 function RouteMap({
   course,
   location_index,
@@ -38,32 +25,6 @@ function RouteMap({
   course: Course;
   location_index: number;
 }) {
-  const [currentPosition, setCurrentPosition] =
-    useState<LatLngExpression | null>(null);
-
-  useEffect(() => {
-    if (!navigator.geolocation) return;
-
-    const watchId = navigator.geolocation.watchPosition(
-      (position: GeolocationPosition) => {
-        setCurrentPosition([
-          position.coords.latitude,
-          position.coords.longitude,
-        ]);
-      },
-      (error) => {
-        console.error("現在地の取得に失敗しました:", error);
-      },
-      {
-        enableHighAccuracy: true,
-        maximumAge: 1000,
-        timeout: 10000,
-      }
-    );
-
-    return () => navigator.geolocation.clearWatch(watchId);
-  }, []);
-
   const route: LatLngExpression[] = course.routes.map((place) => [
     Number(place.latitude),
     Number(place.longitude),
@@ -122,10 +83,6 @@ function RouteMap({
           </Marker>
         );
       })}
-
-      {currentPosition && (
-        <Marker position={currentPosition} icon={currentLocationIcon} />
-      )}
     </MapContainer>
   );
 }

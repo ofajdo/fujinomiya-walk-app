@@ -17,49 +17,43 @@ type Location = Prisma.LocationGetPayload<{
   };
 }>;
 
-type Course = Prisma.CourseGetPayload<{
-  include: {
-    startingPoint: true;
-    routes: true; // orderByは型に影響しないので true でOK
-    points: {
-      include: {
-        point: true;
-      };
-    };
-    locations: {
-      include: {
-        course: true;
-        place: true; // ここは null 許容される
-      };
-    };
-  };
-}>;
+type Item = { id: string };
+
+function arraysEqual(arr1: Item[], arr2: Item[]): boolean {
+  if (arr1.length !== arr2.length) return false;
+
+  const sorted1 = arr1.map((item) => item.id).toSorted();
+  const sorted2 = arr2.map((item) => item.id).toSorted();
+
+  return sorted1.every((id, index) => id === sorted2[index]);
+}
 
 export const SyncUserLocation = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
+  const items = useLiveQuery(() => locationsDB.items.toArray());
 
   React.useEffect(() => {
+    if (!items) return;
     const fetchLocations = async () => {
       const user = await GetUser().catch((error) => null);
 
       if (user?.id) {
+        const dbData = await GetUserLocations({ user: user.id });
+        const filteredData = dbData.filter(({ id }) => {
+          return !items.map((item) => item.id).includes(id);
+        });
+
+        await locationsDB.items.bulkAdd(filteredData);
+
         await PostUserLocations({
           id: items.map((item) => {
             return item.id;
           }),
           user: user.id,
         }).catch(() => null);
-        const dbData = await GetUserLocations({ user: user.id });
-        dbData.map(async (data) => {
-          if (items.includes(data))
-            try {
-              await locationsDB.items.add(data);
-            } catch {}
-        });
       }
     };
     fetchLocations();

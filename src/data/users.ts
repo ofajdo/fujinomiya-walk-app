@@ -21,7 +21,6 @@ export const PostUserLocations = async ({
   });
 
   if (!userLocationData) return;
-  console.log(userLocationData);
 
   const createUserLocation = await prisma.userLocation.createMany({
     data: userLocationData,
