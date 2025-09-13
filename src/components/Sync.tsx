@@ -4,8 +4,7 @@ import { locationsDB } from "@/lib/localdb";
 
 import { useLiveQuery } from "dexie-react-hooks";
 
-import { LocationSerchById } from "@/data/locations";
-import { PostUserLocations, DeleteUserLocation } from "@/data/users";
+import { PostUserLocations, GetUserLocations } from "@/data/users";
 
 import { Prisma } from "@prisma/client";
 
@@ -47,13 +46,21 @@ export const SyncUserLocation = ({
     const fetchLocations = async () => {
       const user = await GetUser().catch((error) => null);
 
-      if (user?.id)
+      if (user?.id) {
         await PostUserLocations({
           id: items.map((item) => {
             return item.id;
           }),
           user: user.id,
         }).catch(() => null);
+        const dbData = await GetUserLocations({ user: user.id });
+        dbData.map(async (data) => {
+          if (items.includes(data))
+            try {
+              await locationsDB.items.add(data);
+            } catch {}
+        });
+      }
     };
     fetchLocations();
   }, [items]);

@@ -29,6 +29,19 @@ export const PostUserLocations = async ({
   });
 };
 
+export const GetUserLocations = async ({ user }: { user: string }) => {
+  const getUserLocation = await prisma.userLocation.findMany({
+    where: {
+      userId: user,
+    },
+  });
+  return getUserLocation.map(({ locationId }) => {
+    return {
+      id: locationId,
+    };
+  });
+};
+
 export const DeleteUserLocation = async ({
   id,
   user,
