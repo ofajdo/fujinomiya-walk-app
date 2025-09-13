@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Leaflet OSM ピン保存 & 座標コピー + 線で接続</title>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+
+    <style>
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        background: #0b1020;
+        color: #e8edf5;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto,
+          "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "YuGothic", Meiryo,
+          sans-serif;
+      }
+      .app {
+        display: grid;
+        grid-template-rows: auto 1fr;
+        height: 100%;
+      }
+      header {
+        display: flex;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: linear-gradient(90deg, #121936, #0b1020);
+        border-bottom: 1px solid #1f2947;
+      }
+      header h1 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #cfe1ff;
+      }
+      header .hint {
+        opacity: 0.85;
+        font-size: 0.9rem;
+      }
+      header .spacer {
+        flex: 1;
+      }
+      button {
+        border: 1px solid #28406f;
+        background: #142044;
+        color: #dbe8ff;
+        padding: 0.5rem 0.75rem;
+        border-radius: 999px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      button:hover {
+        background: #172757;
+        border-color: #3560a9;
+      }
+      #map {
+        width: 100%;
+        height: 100%;
+      }
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: 20px;
+        transform: translateX(-50%) translateY(20px);
+        background: rgba(13, 24, 55, 0.9);
+        color: #e6f0ff;
+        border: 1px solid #2c477c;
+        border-radius: 12px;
+        padding: 0.6rem 0.9rem;
+        font-size: 0.95rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.25s ease;
+        z-index: 2000;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .leaflet-popup-content-wrapper,
+      .leaflet-popup-tip {
+        background: #0f1834;
+        color: #e6eeff;
+        border: 1px solid #2a4170;
+      }
+      .small {
+        font-size: 0.85rem;
+        opacity: 0.9;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header>
+        <h1>Leaflet + OSM：ピン保存 & コピー + 線接続</h1>
+        <div class="hint">
+          地図クリック → ピン保存 & コピー。ピン同士は線で接続。
+        </div>
+        <div class="spacer"></div>
+        <button id="btn-export">全座標CSVコピー</button>
+        <button id="btn-clear">全削除</button>
+      </header>
+      <div id="map"></div>
+    </div>
+    <div id="toast" class="toast"></div>
+
+    <!-- Leaflet JS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <script>
+      const STORAGE_KEY = "leaflet_saved_markers_v2";
+      const fmt = (n) => Number(n).toFixed(6);
+
+      const toastEl = document.getElementById("toast");
+      let toastTimer = null;
+      function showToast(msg, ms = 1800) {
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove("show"), ms);
+      }
+
+      async function copyText(t) {
+        try {
+          await navigator.clipboard.writeText(t);
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      const map = L.map("map", { center: [35.681236, 139.767125], zoom: 13 });
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+      }).addTo(map);
+      L.control.scale({ imperial: false }).addTo(map);
+
+      let markers = [];
+      let polyline = L.polyline([], { color: "#4dd0ff", weight: 3 }).addTo(map);
+
+      function updatePolyline() {
+        const latlngs = markers.map((m) => m.latlng);
+        polyline.setLatLngs(latlngs);
+      }
+
+      function saveMarkers() {
+        const data = markers.map((m) => ({
+          lat: m.latlng.lat,
+          lng: m.latlng.lng,
+        }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        updatePolyline();
+      }
+
+      function addMarker(latlng, copyNow = true) {
+        const text = `${fmt(latlng.lat)},${fmt(latlng.lng)}`;
+        const marker = L.marker(latlng).addTo(map);
+        marker.bindPopup(
+          `<div><strong>座標</strong>：${text}<br><span class="small">クリックでコピー / 右クリックで削除</span></div>`
+        );
+
+        marker.on("click", async () => {
+          await copyText(text);
+          showToast(`コピーしました：${text}`);
+        });
+        marker.on("contextmenu", () => {
+          map.removeLayer(marker);
+          markers = markers.filter((m) => m.marker !== marker);
+          saveMarkers();
+          showToast("ピン削除しました");
+        });
+
+        markers.push({ marker, latlng });
+        saveMarkers();
+
+        if (copyNow) {
+          copyText(text).then((ok) =>
+            showToast(ok ? `コピーしました：${text}` : "コピー失敗")
+          );
+        }
+      }
+
+      function loadMarkers() {
+        markers.forEach((m) => map.removeLayer(m.marker));
+        markers = [];
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) {
+          updatePolyline();
+          return;
+        }
+        try {
+          JSON.parse(raw).forEach((p) =>
+            addMarker(L.latLng(p.lat, p.lng), false)
+          );
+        } catch (e) {
+          console.warn("復元失敗", e);
+        }
+        updatePolyline();
+      }
+
+      map.on("click", (e) => addMarker(e.latlng, true));
+      loadMarkers();
+
+      document.getElementById("btn-clear").onclick = () => {
+        if (!confirm("全ピンを削除しますか？")) return;
+        localStorage.removeItem(STORAGE_KEY);
+        loadMarkers();
+        showToast("全削除しました");
+      };
+      document.getElementById("btn-export").onclick = async () => {
+        const csv = markers
+          .map((m) => `${fmt(m.latlng.lat)},${fmt(m.latlng.lng)}`)
+          .join("\n");
+        if (!csv) {
+          showToast("座標なし");
+          return;
+        }
+        const ok = await copyText(csv);
+        showToast(ok ? "CSVコピーしました" : "コピー失敗");
+      };
+    </script>
+  </body>
+</html>
