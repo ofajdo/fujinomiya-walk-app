@@ -1,8 +1,8 @@
-import { CourseItem } from "@/components/course/courseItem";
-import { Overview } from "@/components/location/overview";
+import { CourseItem } from "@/components/course/CourseItem";
+import { Overview } from "@/components/location/Overview";
 import { CourseRouteRoad } from "@/components/map/CourseRouteRoad";
 import { CourseGetById } from "@/data/courses";
-import LetsStart from "@/components/course/letsStart";
+import LetsStart from "@/components/course/LetsStart";
 import React from "react";
 import Link from "next/link";
 

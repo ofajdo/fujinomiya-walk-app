@@ -1,4 +1,4 @@
-import { Detail } from "@/components/location/detail";
+import { Detail } from "@/components/location/Detail";
 import { LocationSerchById } from "@/data/locations";
 import Link from "next/link";
 

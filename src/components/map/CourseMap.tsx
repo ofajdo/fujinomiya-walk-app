@@ -1,5 +1,5 @@
 import React from "react";
-import { CourseItem } from "../course/courseItem";
+import { CourseItem } from "@/components/course/CourseItem";
 import LocationList from "./locationList";
 import { CourseRouteRoad } from "./CourseRouteRoad";
 import type { Prisma } from "@prisma/client";

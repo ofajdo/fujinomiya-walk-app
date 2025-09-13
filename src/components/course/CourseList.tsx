@@ -19,7 +19,7 @@ type Course = Prisma.CourseGetPayload<{
   };
 }>;
 
-import { CourseItem } from "./courseItem";
+import { CourseItem } from "./CourseItem";
 
 export function CourseList({ courses }: { courses: Course[] }) {
   return (

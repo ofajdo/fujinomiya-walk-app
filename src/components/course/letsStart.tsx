@@ -1,7 +1,7 @@
 "use client";
 import type { Prisma } from "@prisma/client";
 import Link from "next/link";
-import PleaseText from "../pleaseText";
+import PleaseText from "../PleaseText";
 
 type Course = Prisma.CourseGetPayload<{
   include: {

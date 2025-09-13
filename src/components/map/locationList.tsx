@@ -1,16 +1,15 @@
 "use client";
 
 import { Prisma } from "@prisma/client";
-import { Overview } from "@/components/location/overview";
+import { Overview } from "@/components/location/Overview";
 import React from "react";
-import WalkedButton from "./walked";
+import WalkedButton from "@/components/map/Walked";
 
 import { locationsDB } from "@/lib/localdb";
 
 import { useLiveQuery } from "dexie-react-hooks";
 
-import { LocationSerchById } from "@/data/locations";
-import { PostUserLocations, DeleteUserLocation } from "@/data/users";
+import { DeleteUserLocation } from "@/data/users";
 
 import { GetUser } from "@/actions/user";
 
@@ -23,7 +22,7 @@ type Location = Prisma.LocationGetPayload<{
 type Course = Prisma.CourseGetPayload<{
   include: {
     startingPoint: true;
-    routes: true; // orderByは型に影響しないので true でOK
+    routes: true;
     points: {
       include: {
         point: true;
@@ -32,7 +31,7 @@ type Course = Prisma.CourseGetPayload<{
     locations: {
       include: {
         course: true;
-        place: true; // ここは null 許容される
+        place: true;
       };
     };
   };

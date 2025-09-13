@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { Overview } from "./overview";
+import { Overview } from "./Overview";
 
 import { Prisma } from "@prisma/client";
 

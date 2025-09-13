@@ -1,7 +1,7 @@
 import { CoursesGet } from "@/data/courses";
-import { CourseList } from "@/components/course/course_list";
+import { CourseList } from "@/components/course/CourseList";
 import type { Prisma } from "@prisma/client";
-import PleaseText from "@/components/pleaseText";
+import PleaseText from "@/components/PleaseText";
 import Link from "next/link";
 
 type Course = Prisma.CourseGetPayload<{
