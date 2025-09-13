@@ -42,7 +42,6 @@ export const SyncUserLocation = ({
   children: React.ReactNode;
 }) => {
   const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
-  const [, setLocations] = React.useState<Location[] | null>(null);
 
   React.useEffect(() => {
     const fetchLocations = async () => {
@@ -55,18 +54,9 @@ export const SyncUserLocation = ({
           }),
           user: user.id,
         }).catch(() => null);
-
-      if (!items || items.length === 0) {
-        setLocations([]);
-        return;
-      }
-      const locationPromises = items.map((item) => LocationSerchById(item));
-      const resolvedLocations = await Promise.all(locationPromises);
-      setLocations(
-        resolvedLocations.filter((loc) => loc !== null) as Location[]
-      );
     };
     fetchLocations();
   }, [items]);
+
   return <>{children}</>;
 };

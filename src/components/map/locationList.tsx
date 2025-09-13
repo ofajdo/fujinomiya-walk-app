@@ -62,7 +62,6 @@ const LocationList = ({ course }: { course: Course | null }) => {
                       console.log(err);
                       return null;
                     });
-                    console.log(user);
                     if (items?.some((loc) => loc.id === location.id)) {
                       locationsDB.items.delete(location.id);
                       if (user?.id)

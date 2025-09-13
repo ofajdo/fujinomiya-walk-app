@@ -36,13 +36,13 @@ export function Overview({
         )}
       </div>
       <div className="flex-1 p-1 flex flex-col justify-around gap-2">
-        <p className="text-center text-xs md:text-sm">
+        <p className="text-center text-xs md:text-sm line-clamp-1">
           <span className="text-sm font-bold pr-2 font-mono">
             {location?.course.name}-{location?.number}
           </span>
           {location?.course.title}
         </p>
-        <h2 className="font-medium text-lg md:text-2xl text-center text-balance cursor-pointer hover:underline">
+        <h2 className="font-medium text-lg md:text-2xl text-center text-balance cursor-pointer hover:underline line-clamp-2">
           <Link href={`/location/${location?.id}`}>{location?.title}</Link>
         </h2>
         <div className="flex justify-center flex-wrap">{children}</div>

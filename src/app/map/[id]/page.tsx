@@ -1,9 +1,5 @@
-import { CourseItem } from "@/components/course/courseItem";
-import { CourseRouteRoad } from "@/components/map/CourseRouteRoad";
 import { CourseGetById } from "@/data/courses";
 import React from "react";
-import LocationList from "@/components/map/locationList";
-
 import type { Prisma } from "@prisma/client";
 import CourseMap from "@/components/map/CourseMap";
 
