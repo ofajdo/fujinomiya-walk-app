@@ -46,8 +46,8 @@ function RouteMap({
       className="h-full w-full"
     >
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
+        url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
       />
 
       {course.routes.map((place, index) => {

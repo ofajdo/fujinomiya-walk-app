@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   MapContainer,
   Marker,
   Polyline,
   Popup,
   TileLayer,
+  useMap,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
@@ -23,6 +24,13 @@ type Course = Prisma.CourseGetPayload<{
     };
   };
 }>;
+
+function ChangeMapCenter({ position }: { position: LatLngExpression | null }) {
+  const map = useMap();
+
+  if (position !== null) map.flyTo(position);
+  return null;
+}
 
 const currentLocationIcon = L.divIcon({
   html: ``,
@@ -84,12 +92,10 @@ function RouteMap({ course }: { course: Course }) {
       </button>
       <MapContainer center={route[0]} zoom={17} className="h-full w-full">
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
+          url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
         />
-
         <Polyline positions={route} />
-
         {course.routes.map((place, index) => {
           const icon = L.divIcon({
             html: `${place.name?.charAt(0)}`,
@@ -105,7 +111,6 @@ function RouteMap({ course }: { course: Course }) {
             </Marker>
           ) : null;
         })}
-
         {course.locations.map((location, index) => {
           if (!location.place) return null;
           const icon = L.divIcon({
@@ -123,9 +128,11 @@ function RouteMap({ course }: { course: Course }) {
             </Marker>
           );
         })}
-
         {currentPosition && (
-          <Marker position={currentPosition} icon={currentLocationIcon} />
+          <>
+            <Marker position={currentPosition} icon={currentLocationIcon} />
+            <ChangeMapCenter position={currentPosition} />
+          </>
         )}
       </MapContainer>
     </div>
