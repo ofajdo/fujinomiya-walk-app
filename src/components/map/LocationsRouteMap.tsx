@@ -37,7 +37,7 @@ function ChangeMapCenter({
 
   useEffect(() => {
     if (position !== null && onTracking) {
-      map.flyTo(position);
+      map.panTo(position);
     }
   }, [map, position, onTracking]);
 
@@ -79,8 +79,11 @@ function RouteMap({ course }: { course: Course }) {
 
   const startGeolocation = () => {
     setOnTracking(true);
-    if (watchId !== null) return;
-    if (typeof window === "undefined" || !navigator.geolocation) return;
+
+    if (typeof window === "undefined" || !navigator.geolocation) {
+      return;
+    }
+
     const id = navigator.geolocation.watchPosition(
       (position: GeolocationPosition) => {
         setCurrentPosition([
@@ -90,6 +93,7 @@ function RouteMap({ course }: { course: Course }) {
       },
       (error) => {
         console.error("現在地の取得に失敗しました:", error);
+        alert("現在地の取得に失敗しました");
       },
       {
         enableHighAccuracy: true,
@@ -116,7 +120,13 @@ function RouteMap({ course }: { course: Course }) {
       >
         現在地を表示
       </button>
-      <MapContainer center={route[0]} zoom={17} className="h-full w-full">
+      <MapContainer
+        minZoom={10}
+        maxZoom={18}
+        center={route[0]}
+        zoom={17}
+        className="h-full w-full"
+      >
         <TileLayer
           attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
           url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
