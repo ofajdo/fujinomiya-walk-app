@@ -8,6 +8,7 @@ import {
   Popup,
   TileLayer,
   useMap,
+  useMapEvents,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L, { LatLngExpression } from "leaflet";
@@ -25,10 +26,16 @@ type Course = Prisma.CourseGetPayload<{
   };
 }>;
 
-function ChangeMapCenter({ position }: { position: LatLngExpression | null }) {
+function ChangeMapCenter({
+  position,
+  onTracking,
+}: {
+  position: LatLngExpression | null;
+  onTracking: boolean;
+}) {
   const map = useMap();
 
-  if (position !== null) map.flyTo(position);
+  if (position !== null && onTracking) map.flyTo(position);
   return null;
 }
 
@@ -39,7 +46,20 @@ const currentLocationIcon = L.divIcon({
   iconAnchor: [9, 9],
 });
 
+function StopTrackingOnMove({
+  setOnTracking,
+}: {
+  setOnTracking: (v: boolean) => void;
+}) {
+  useMapEvents({
+    dragstart: () => setOnTracking(false),
+    zoomstart: () => setOnTracking(false),
+  });
+  return null;
+}
+
 function RouteMap({ course }: { course: Course }) {
+  const [onTracking, setOnTracking] = useState<boolean>(false);
   const [currentPosition, setCurrentPosition] =
     useState<LatLngExpression | null>(null);
   const [watchId, setWatchId] = useState<number | null>(null);
@@ -86,11 +106,12 @@ function RouteMap({ course }: { course: Course }) {
     <div className="h-full w-full relative">
       <button
         onClick={startGeolocation}
-        className="absolute z-[1000] top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded shadow"
+        className="absolute z-[10000] top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded shadow"
       >
         現在地を表示
       </button>
       <MapContainer center={route[0]} zoom={17} className="h-full w-full">
+        <StopTrackingOnMove setOnTracking={setOnTracking} />
         <TileLayer
           attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
           url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
@@ -131,7 +152,10 @@ function RouteMap({ course }: { course: Course }) {
         {currentPosition && (
           <>
             <Marker position={currentPosition} icon={currentLocationIcon} />
-            <ChangeMapCenter position={currentPosition} />
+            <ChangeMapCenter
+              position={currentPosition}
+              onTracking={onTracking}
+            />
           </>
         )}
       </MapContainer>
