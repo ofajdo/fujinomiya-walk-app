@@ -35,7 +35,12 @@ function ChangeMapCenter({
 }) {
   const map = useMap();
 
-  if (position !== null && onTracking) map.flyTo(position);
+  useEffect(() => {
+    if (position !== null && onTracking) {
+      map.flyTo(position);
+    }
+  }, [map, position, onTracking]);
+
   return null;
 }
 
@@ -92,6 +97,7 @@ function RouteMap({ course }: { course: Course }) {
       }
     );
     setWatchId(id);
+    setOnTracking(true);
   };
 
   const route: LatLngExpression[] = course.routes.map((place) => [
@@ -111,11 +117,13 @@ function RouteMap({ course }: { course: Course }) {
         現在地を表示
       </button>
       <MapContainer center={route[0]} zoom={17} className="h-full w-full">
-        <StopTrackingOnMove setOnTracking={setOnTracking} />
         <TileLayer
           attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
           url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
         />
+
+        <StopTrackingOnMove setOnTracking={setOnTracking} />
+
         <Polyline positions={route} />
         {course.routes.map((place, index) => {
           const icon = L.divIcon({
