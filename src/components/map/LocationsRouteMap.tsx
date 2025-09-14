@@ -78,6 +78,7 @@ function RouteMap({ course }: { course: Course }) {
   }, [watchId]);
 
   const startGeolocation = () => {
+    setOnTracking(true);
     if (watchId !== null) return;
     if (typeof window === "undefined" || !navigator.geolocation) return;
     const id = navigator.geolocation.watchPosition(
@@ -97,7 +98,6 @@ function RouteMap({ course }: { course: Course }) {
       }
     );
     setWatchId(id);
-    setOnTracking(true);
   };
 
   const route: LatLngExpression[] = course.routes.map((place) => [
