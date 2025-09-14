@@ -39,7 +39,7 @@ export const CourseGetById = async (id: string) => {
       startingPoint: true,
       routes: {
         orderBy: {
-          sort: "asc",
+          sort: "desc",
         },
       },
       points: {

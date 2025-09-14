@@ -4,10 +4,9 @@
 
 @keyframes dash {
   to {
-    stroke-dashoffset: -20;
+    stroke-dashoffset: 20;
   }
 }
-
 .leaflet-interactive.animate-dash {
   stroke-dasharray: 10 10;
   stroke-dashoffset: 0;
