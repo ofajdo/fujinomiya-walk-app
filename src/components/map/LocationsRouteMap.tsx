@@ -116,7 +116,7 @@ function RouteMap({ course }: { course: Course }) {
     <div className="h-full w-full relative">
       <button
         onClick={startGeolocation}
-        className="absolute z-[10000] top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded shadow"
+        className="absolute z-[1000] top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded shadow"
       >
         現在地を表示
       </button>
@@ -130,11 +130,29 @@ function RouteMap({ course }: { course: Course }) {
         <TileLayer
           attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
           url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
+          className="[&_.leaflet-tile]:saturate-50 [&_.leaflet-tile]:contrast-90 [&_.leaflet-tile]:!opacity-70"
         />
 
         <StopTrackingOnMove setOnTracking={setOnTracking} />
 
-        <Polyline positions={route} />
+        <Polyline
+          positions={route}
+          pathOptions={{
+            color: "white",
+            weight: 6,
+            opacity: 1,
+          }}
+        />
+        <Polyline
+          positions={route}
+          pathOptions={{
+            color: "blue",
+            weight: 3,
+            opacity: 1,
+            dashArray: "10 10",
+            className: "animate-dash",
+          }}
+        />
         {course.routes.map((place, index) => {
           const icon = L.divIcon({
             html: `${place.name?.charAt(0)}`,

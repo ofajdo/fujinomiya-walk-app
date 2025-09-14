@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+
+.leaflet-interactive.animate-dash {
+  stroke-dasharray: 10 10;
+  stroke-dashoffset: 0;
+  animation: dash 1s linear infinite;
+}
