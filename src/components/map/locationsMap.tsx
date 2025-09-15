@@ -50,22 +50,6 @@ function RouteMap({
         url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
       />
 
-      {course.routes.map((place, index) => {
-        const icon = L.divIcon({
-          html: `${place.name?.charAt(0)}`,
-          className:
-            "rounded-full bg-blue-700 text-white text-lg font-mono text-center leading-[24px]",
-          iconSize: [24, 24],
-          iconAnchor: [12, 12],
-        });
-
-        return place.display ? (
-          <Marker position={route[index]} key={index} icon={icon}>
-            <Popup>{place.title}</Popup>
-          </Marker>
-        ) : null;
-      })}
-
       {course.locations.map((location, index) => {
         if (!location.place) return null;
         const icon = L.divIcon({

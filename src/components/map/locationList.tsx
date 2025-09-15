@@ -48,8 +48,8 @@ const LocationList = ({ course }: { course: Course | null }) => {
             key={index}
             className={`${
               !!items?.some((loc) => loc.id === location.id)
-                ? "opacity-50 order-2"
-                : "order-1"
+                ? "order-1"
+                : "order-0"
             }`}
           >
             <div className={`w-full p-2`}>
@@ -57,10 +57,7 @@ const LocationList = ({ course }: { course: Course | null }) => {
                 <WalkedButton
                   location={location}
                   onWalked={async () => {
-                    const user = await GetUser().catch((err) => {
-                      console.log(err);
-                      return null;
-                    });
+                    const user = await GetUser().catch((err) => null);
                     if (items?.some((loc) => loc.id === location.id)) {
                       locationsDB.items.delete(location.id);
                       if (user?.id)

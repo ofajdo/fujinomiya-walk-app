@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+import { locationsDB } from "@/lib/localdb";
 import {
   MapContainer,
   Marker,
@@ -130,6 +132,7 @@ export function AnimatedPolyline({ route }: { route: LatLngExpression[] }) {
 }
 
 function RouteMap({ course }: { course: Course }) {
+  const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
   const [onTracking, setOnTracking] = useState<boolean>(false);
   const [currentPosition, setCurrentPosition] =
     useState<LatLngExpression | null>(null);
@@ -229,8 +232,11 @@ function RouteMap({ course }: { course: Course }) {
           if (!location.place) return null;
           const icon = L.divIcon({
             html: `${location.number}`,
-            className:
-              "rounded-full bg-gray-700 text-white text-lg font-mono text-center leading-[24px]",
+            className: `rounded-full text-sm font-mono text-center leading-[24px] ${
+              !!items?.some((loc) => loc.id === location.id)
+                ? "bg-gray-400 text-gray-100"
+                : "bg-gray-800 text-white"
+            }`,
             iconSize: [24, 24],
             iconAnchor: [12, 12],
           });

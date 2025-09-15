@@ -26,11 +26,11 @@ export default async function Course({
           <Link href={`/map/${course.id}`}>マップを開く</Link>
         </p>
       </div>
-      <ol className="flex flex-col gap-4">
+      <ol className="flex flex-col">
         {course?.locations.map((location, index) => {
           return (
             <li key={index}>
-              <div className="w-full p-2 bg-gray-100 rounded-xl shadow">
+              <div className="w-full p-2">
                 <Overview location={location}>
                   <div>
                     <Link
