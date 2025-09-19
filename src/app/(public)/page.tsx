@@ -53,7 +53,7 @@ const Home = async () => {
         </div>
         <div>
           <h3 className="mb-1 p-1 text-center font-medium text-blue-900 text-xl">
-            参考
+            引用
           </h3>
           <p className="text-sm p-2 line-height">
             このアプリは、「富士宮市歩く博物館」のコース情報をもとに作成しています。
