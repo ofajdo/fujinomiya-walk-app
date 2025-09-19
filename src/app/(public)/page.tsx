@@ -33,7 +33,9 @@ const Home = async () => {
             富士宮市歩く博物館デジタル版へようこそ
           </h2>
         </div>
-        <p className="text-center">※非公式のサイトです</p>
+        <p className="text-center">
+          富士宮市歩く博物館のコースの紹介をしています。
+        </p>
         <div>
           <PleaseText />
         </div>
@@ -54,7 +56,7 @@ const Home = async () => {
             参考
           </h3>
           <p className="text-sm p-2 line-height">
-            このアプリは、富士宮市教育委員会が提供する「富士宮市歩く博物館」のコース情報をもとに作成しています。
+            このアプリは、「富士宮市歩く博物館」のコース情報をもとに作成しています。
             <br />
             以下の市のサイトをご参照ください。
             <br />
