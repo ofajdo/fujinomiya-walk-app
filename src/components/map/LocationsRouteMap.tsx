@@ -249,7 +249,7 @@ function RouteMap({ course }: { course: Course }) {
   return (
     <div className="h-full w-full relative">
       {heading !== null && (
-        <noscript>🧭 向いている方向: {Math.round(heading)}°</noscript>
+        <div className="none">🧭 向いている方向: {Math.round(heading)}°</div>
       )}
       <button
         onClick={startGeolocation}
