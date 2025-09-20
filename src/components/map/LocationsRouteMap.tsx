@@ -138,13 +138,67 @@ function RouteMap({ course }: { course: Course }) {
     useState<LatLngExpression | null>(null);
   const [watchId, setWatchId] = useState<number | null>(null);
 
+  const [heading, setHeading] = useState<number | null>(null); // 方位
+  const [iosFlag, setIosFlag] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true);
+
+  const ua: string[] = ["iPod", "iPad", "iPhone"];
+
+  // 初期判定（iOS/Android/PC）
   useEffect(() => {
-    return () => {
-      if (watchId !== null) {
-        navigator.geolocation.clearWatch(watchId);
+    if (typeof window === "undefined") return;
+
+    if (window.DeviceOrientationEvent && "ontouchstart" in window) {
+      // mobile
+      for (let i = 0; i < ua.length; i++) {
+        if (window.navigator.userAgent.indexOf(ua[i]) > 0) {
+          setIosFlag(true);
+          setIsDisabled(false);
+          return;
+        }
       }
-    };
-  }, [watchId]);
+
+      if (window.navigator.userAgent.indexOf("Android") > 0) {
+        setIsDisabled(false);
+      }
+    }
+  }, []);
+
+  const check = () => {
+    setIsDisabled(true);
+
+    if (iosFlag) {
+      // iOS Safari 用
+      try {
+        (DeviceOrientationEvent as any)
+          .requestPermission()
+          .then((res: string) => {
+            if (res === "granted") {
+              startOrientation();
+            } else {
+              alert("方向の取得に失敗しました");
+            }
+          });
+      } catch (e) {
+        alert("方向の取得に失敗しました");
+        alert(e);
+      }
+    } else {
+      // Android
+      startOrientation();
+    }
+  };
+
+  const startOrientation = () => {
+    window.addEventListener(
+      "deviceorientation",
+      (event: DeviceOrientationEvent) => {
+        if (event.alpha !== null) {
+          setHeading(event.alpha); // 北を0°とした角度
+        }
+      }
+    );
+  };
 
   const startGeolocation = () => {
     setOnTracking(true);
@@ -153,6 +207,7 @@ function RouteMap({ course }: { course: Course }) {
       return;
     }
 
+    // 現在地取得
     const id = navigator.geolocation.watchPosition(
       (position: GeolocationPosition) => {
         setCurrentPosition([
@@ -171,7 +226,17 @@ function RouteMap({ course }: { course: Course }) {
       }
     );
     setWatchId(id);
+    check();
   };
+
+  useEffect(() => {
+    return () => {
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+      }
+      window.removeEventListener("deviceorientation", () => {});
+    };
+  }, [watchId]);
 
   const route: LatLngExpression[] = course.routes.map((place) => [
     Number(place.latitude),
@@ -183,6 +248,9 @@ function RouteMap({ course }: { course: Course }) {
 
   return (
     <div className="h-full w-full relative">
+      {heading !== null && (
+        <noscript>🧭 向いている方向: {Math.round(heading)}°</noscript>
+      )}
       <button
         onClick={startGeolocation}
         className="absolute z-[1000] top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded shadow"
