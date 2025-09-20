@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
-import { Noto_Sans_JP, M_PLUS_1_Code } from "next/font/google";
+import { Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
 import { SyncUserLocation } from "@/components/Sync";
+import { Analytics } from "@vercel/analytics/next";
 
 const notoSansJP = Noto_Sans_JP({
   subsets: ["latin"],
@@ -25,6 +26,7 @@ export default function RootLayout({
     <html lang="ja">
       <body suppressHydrationWarning className={notoSansJP.className}>
         <SyncUserLocation>{children}</SyncUserLocation>
+        <Analytics />
       </body>
     </html>
   );
