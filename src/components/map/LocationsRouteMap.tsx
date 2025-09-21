@@ -20,6 +20,11 @@ import { Prisma } from "@prisma/client";
 type Course = Prisma.CourseGetPayload<{
   include: {
     routes: true;
+    startingPoint: {
+      include: {
+        place: true;
+      };
+    };
     locations: {
       include: {
         place: true;
@@ -239,6 +244,10 @@ function RouteMap({ course }: { course: Course }) {
   const ToLatLng = (place: { latitude: string; longitude: string }) =>
     [Number(place.latitude), Number(place.longitude)] as LatLngExpression;
 
+  const statingPoint = course.startingPoint.place
+    ? ToLatLng(course.startingPoint.place)
+    : null;
+
   return (
     <div className="h-full w-full relative">
       <button
@@ -266,8 +275,8 @@ function RouteMap({ course }: { course: Course }) {
           positions={route}
           pathOptions={{
             color: "white",
-            weight: 8,
-            opacity: 1,
+            weight: 6,
+            opacity: 0.8,
           }}
         />
         <AnimatedPolyline route={route} />
@@ -329,6 +338,21 @@ function RouteMap({ course }: { course: Course }) {
           </>
         )}
         <MovingMarker route={route} speed={600} />
+        {statingPoint && (
+          <Marker
+            position={statingPoint}
+            icon={L.divIcon({
+              html: "スタート",
+              className: "bg-blue-600 text-white rounded text-center",
+              iconSize: [54, 18],
+              iconAnchor: [27, 9],
+            })}
+          >
+            <Popup>
+              <div>{course.startingPoint.name}</div>
+            </Popup>
+          </Marker>
+        )}
       </MapContainer>
     </div>
   );

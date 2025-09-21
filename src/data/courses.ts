@@ -5,7 +5,11 @@ import { truncate } from "fs";
 export const CoursesGet = async () => {
   const courses = await prisma.course.findMany({
     include: {
-      startingPoint: true,
+      startingPoint: {
+        include: {
+          place: true,
+        },
+      },
       routes: {
         orderBy: {
           sort: "asc",
@@ -36,7 +40,11 @@ export const CourseGetById = async (id: string) => {
       id: id,
     },
     include: {
-      startingPoint: true,
+      startingPoint: {
+        include: {
+          place: true,
+        },
+      },
       routes: {
         orderBy: {
           sort: "asc",
