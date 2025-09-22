@@ -42,12 +42,14 @@ function RouteMap({
         course.locations.find((location) => location.number === location_index)
           ?.place!
       )}
+      minZoom={10}
+      maxZoom={18}
       zoom={18}
       className="h-full w-full"
     >
       <TileLayer
-        attribution='&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>'
-        url="https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
       {course.locations.map((location, index) => {

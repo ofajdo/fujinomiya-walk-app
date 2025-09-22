@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Leaflet OSM ピン保存 & 座標コピー + 線で接続</title>
+    <title>Leaflet マップ切替 + ピン保存 & 線接続</title>
 
     <!-- Leaflet CSS -->
     <link
@@ -20,9 +20,7 @@
         margin: 0;
         background: #0b1020;
         color: #e8edf5;
-        font-family: system-ui, -apple-system, "Segoe UI", Roboto,
-          "Hiragino Sans", "Noto Sans JP", "Yu Gothic UI", "YuGothic", Meiryo,
-          sans-serif;
+        font-family: sans-serif;
       }
       .app {
         display: grid;
@@ -103,10 +101,8 @@
   <body>
     <div class="app">
       <header>
-        <h1>Leaflet + OSM：ピン保存 & コピー + 線接続</h1>
-        <div class="hint">
-          地図クリック → ピン保存 & コピー。ピン同士は線で接続。
-        </div>
+        <h1>Leaflet：ピン保存 & 線接続 + 地図切替</h1>
+        <div class="hint">クリックでピン保存・コピー。ピンは線で接続。</div>
         <div class="spacer"></div>
         <button id="btn-export">全座標CSVコピー</button>
         <button id="btn-clear">全削除</button>
@@ -123,7 +119,7 @@
     ></script>
 
     <script>
-      const STORAGE_KEY = "leaflet_saved_markers_v2";
+      const STORAGE_KEY = "leaflet_saved_markers_v3";
       const fmt = (n) => Number(n).toFixed(6);
 
       const toastEl = document.getElementById("toast");
@@ -134,7 +130,6 @@
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => toastEl.classList.remove("show"), ms);
       }
-
       async function copyText(t) {
         try {
           await navigator.clipboard.writeText(t);
@@ -144,22 +139,95 @@
         }
       }
 
-      const map = L.map("map", { center: [35.681236, 139.767125], zoom: 13 });
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
-      }).addTo(map);
+      // ====== ベースレイヤー ======
+      const osm = L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+          maxZoom: 19,
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>',
+        }
+      );
+
+      const gsi = L.tileLayer(
+        "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
+        {
+          attribution: "地理院地図",
+        }
+      );
+
+      const gmap = L.tileLayer(
+        "http://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+        {
+          attribution: "Google Maps",
+        }
+      );
+
+      const gsat = L.tileLayer(
+        "http://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+        {
+          attribution: "Google Satellite",
+        }
+      );
+
+      // Esri Satellite
+      const esriSat = L.tileLayer(
+        "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+        {
+          attribution:
+            "Tiles &copy; Esri &mdash; Source: Esri, Earthstar Geographics",
+          maxZoom: 19,
+        }
+      );
+
+      // Mapbox Satellite (要アクセストークン)
+      const mapboxToken = ""; // ここにアクセストークンを設定
+      const mapboxSat = L.tileLayer(
+        "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=" +
+          mapboxToken,
+        {
+          attribution:
+            'Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>',
+          maxZoom: 19,
+        }
+      );
+
+      // 国土地理院写真画像
+      const gsiOrtho = L.tileLayer(
+        "https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg",
+        {
+          attribution: "地理院写真画像",
+          maxZoom: 18,
+        }
+      );
+
+      // ====== 地図初期化 ======
+      const map = L.map("map", {
+        center: [35.681236, 139.767125],
+        zoom: 13,
+        layers: [osm],
+      });
       L.control.scale({ imperial: false }).addTo(map);
 
+      // レイヤー切替コントロール
+      const baseMaps = {
+        OpenStreetMap: osm,
+        "国土地理院(淡色)": gsi,
+        "Google Maps": gmap,
+        "Google 航空写真": gsat,
+        "Esri 衛星写真": esriSat,
+        "Mapbox 衛星写真": mapboxSat,
+        国土地理院写真画像: gsiOrtho,
+      };
+      L.control.layers(baseMaps).addTo(map);
+
+      // ====== マーカー管理 ======
       let markers = [];
       let polyline = L.polyline([], { color: "#4dd0ff", weight: 3 }).addTo(map);
 
       function updatePolyline() {
-        const latlngs = markers.map((m) => m.latlng);
-        polyline.setLatLngs(latlngs);
+        polyline.setLatLngs(markers.map((m) => m.latlng));
       }
-
       function saveMarkers() {
         const data = markers.map((m) => ({
           lat: m.latlng.lat,
@@ -175,7 +243,6 @@
         marker.bindPopup(
           `<div><strong>座標</strong>：${text}<br><span class="small">クリックでコピー / 右クリックで削除</span></div>`
         );
-
         marker.on("click", async () => {
           await copyText(text);
           showToast(`コピーしました：${text}`);
@@ -186,10 +253,8 @@
           saveMarkers();
           showToast("ピン削除しました");
         });
-
         markers.push({ marker, latlng });
         saveMarkers();
-
         if (copyNow) {
           copyText(text).then((ok) =>
             showToast(ok ? `コピーしました：${text}` : "コピー失敗")
@@ -201,16 +266,12 @@
         markers.forEach((m) => map.removeLayer(m.marker));
         markers = [];
         const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) {
-          updatePolyline();
-          return;
-        }
-        try {
-          JSON.parse(raw).forEach((p) =>
-            addMarker(L.latLng(p.lat, p.lng), false)
-          );
-        } catch (e) {
-          console.warn("復元失敗", e);
+        if (raw) {
+          try {
+            JSON.parse(raw).forEach((p) =>
+              addMarker(L.latLng(p.lat, p.lng), false)
+            );
+          } catch {}
         }
         updatePolyline();
       }
@@ -218,6 +279,7 @@
       map.on("click", (e) => addMarker(e.latlng, true));
       loadMarkers();
 
+      // ====== ボタン処理 ======
       document.getElementById("btn-clear").onclick = () => {
         if (!confirm("全ピンを削除しますか？")) return;
         localStorage.removeItem(STORAGE_KEY);
