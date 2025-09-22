@@ -5,7 +5,11 @@ import CourseMap from "@/components/map/CourseMap";
 
 type Course = Prisma.CourseGetPayload<{
   include: {
-    startingPoint: true;
+    startingPoint: {
+      include: {
+        place: true;
+      };
+    };
     routes: true; // orderByは型に影響しないので true でOK
     points: {
       include: {
