@@ -5,6 +5,11 @@ import { Prisma } from "@prisma/client";
 type Course = Prisma.CourseGetPayload<{
   include: {
     routes: true;
+    startingPoint: {
+      include: {
+        place: true;
+      };
+    };
     locations: {
       include: {
         place: true;

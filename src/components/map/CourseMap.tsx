@@ -6,7 +6,11 @@ import type { Prisma } from "@prisma/client";
 
 type Course = Prisma.CourseGetPayload<{
   include: {
-    startingPoint: true;
+    startingPoint: {
+      include: {
+        place: true;
+      };
+    };
     routes: true; // orderByは型に影響しないので true でOK
     points: {
       include: {
