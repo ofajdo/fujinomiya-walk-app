@@ -30,6 +30,9 @@ export const CoursesGet = async () => {
         },
       },
     },
+    orderBy: {
+      id: "asc",
+    },
   });
   return courses;
 };
