@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   // 座標データをそのまま貼り付け
   const rawData = `
+
 `;
 
   // 改行で分割して [lat, lng] の配列に変換
@@ -22,7 +23,7 @@ async function main() {
     longitude: lng,
     courseId,
     display: false,
-    sort: new Date(now.getTime() + index * 100), // 順番を保つ
+    sort: new Date(now.getTime() + index * 1000), // 順番を保つ
   }));
 
   await prisma.route.createMany({

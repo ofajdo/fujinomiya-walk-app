@@ -7,7 +7,7 @@ import Link from "next/link";
 type Course = Prisma.CourseGetPayload<{
   include: {
     startingPoint: true;
-    routes: true; // orderByは型に影響しないので true でOK
+    routes: true; 
     points: {
       include: {
         point: true;
@@ -16,7 +16,7 @@ type Course = Prisma.CourseGetPayload<{
     locations: {
       include: {
         course: true;
-        place: true; // ここは null 許容される
+        place: true;
       };
     };
   };
