@@ -30,3 +30,28 @@ export async function LocationSerchById({ id }: Location) {
 
   return location;
 }
+
+export async function LocationsGet() {
+  const location = await prisma.location.findMany({
+    include: {
+      course: {
+        include: {
+          routes: true,
+          locations: {
+            include: {
+              place: true,
+            },
+          },
+        },
+      },
+      culture: {
+        include: { culture: true },
+      },
+      topic: {
+        include: { topic: true },
+      },
+    },
+  });
+
+  return location;
+}

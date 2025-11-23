@@ -1,10 +1,18 @@
 import { CourseItem } from "@/components/course/CourseItem";
 import { Overview } from "@/components/location/Overview";
 import { CourseRouteRoad } from "@/components/map/CourseRouteRoad";
-import { CourseGetById } from "@/data/courses";
+import { CourseGetById, CoursesGet } from "@/data/courses";
 import LetsStart from "@/components/course/LetsStart";
 import React from "react";
 import Link from "next/link";
+
+const courses = await CoursesGet();
+
+export const generateStaticParams = () => {
+  return courses.map((c) => ({
+    id: c.id,
+  }));
+};
 
 export default async function Course({
   params,
@@ -12,7 +20,7 @@ export default async function Course({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const course = await CourseGetById(id).catch(() => null);
+  const course = courses.find((c) => c.id === id);
 
   if (!course) {
     return <div className="p-4">コースが見つかりませんでした。</div>;

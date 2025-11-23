@@ -1,7 +1,15 @@
-import { CourseGetById } from "@/data/courses";
+import { CourseGetById, CoursesGet } from "@/data/courses";
 import React from "react";
 import type { Prisma } from "@prisma/client";
 import CourseMap from "@/components/map/CourseMap";
+
+const courses = await CoursesGet();
+
+export const generateStaticParams = () => {
+  return courses.map((c) => ({
+    id: c.id,
+  }));
+};
 
 type Course = Prisma.CourseGetPayload<{
   include: {
@@ -10,7 +18,7 @@ type Course = Prisma.CourseGetPayload<{
         place: true;
       };
     };
-    routes: true; // orderByは型に影響しないので true でOK
+    routes: true;
     points: {
       include: {
         point: true;
@@ -19,7 +27,7 @@ type Course = Prisma.CourseGetPayload<{
     locations: {
       include: {
         course: true;
-        place: true; // ここは null 許容される
+        place: true;
       };
     };
   };
@@ -31,7 +39,7 @@ export default async function Course({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const course: Course | null = await CourseGetById(id).catch(() => null);
+  const course = courses.find((c) => c.id === id);
 
   return (
     <>

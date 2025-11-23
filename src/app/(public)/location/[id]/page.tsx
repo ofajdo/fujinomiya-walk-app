@@ -1,6 +1,13 @@
 import { Detail } from "@/components/location/Detail";
-import { LocationSerchById } from "@/data/locations";
+import { LocationSerchById, LocationsGet } from "@/data/locations";
 import Link from "next/link";
+
+const locations = await LocationsGet();
+export const generateStaticParams = () => {
+  return locations.map((l) => ({
+    id: l.id,
+  }));
+};
 
 export default async function Location({
   params,
@@ -8,7 +15,7 @@ export default async function Location({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const location = await LocationSerchById({ id: id }).catch(() => null);
+  const location = locations.find((l) => l.id === id);
 
   if (!location) return <div className="p-4">見つかりませんでした。</div>;
 
