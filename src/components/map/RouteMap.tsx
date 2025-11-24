@@ -49,7 +49,7 @@ function RouteMap({ course }: { course: Course }) {
     <div className="h-full w-full relative">
       <button
         onClick={handleStartTracking}
-        className="absolute z-[1000] top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded shadow disabled:bg-gray-400"
+        className="absolute z-[1000] top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded shadow"
       >
         現在地を表示
       </button>

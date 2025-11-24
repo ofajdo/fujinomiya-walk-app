@@ -1,13 +1,12 @@
 import { CoursesGet } from "@/data/courses";
 import { CourseList } from "@/components/course/CourseList";
 import type { Prisma } from "@prisma/client";
-import PleaseText from "@/components/PleaseText";
 import Link from "next/link";
 
 type Course = Prisma.CourseGetPayload<{
   include: {
     startingPoint: true;
-    routes: true; 
+    routes: true;
     points: {
       include: {
         point: true;
@@ -37,9 +36,6 @@ const Home = async () => {
           富士宮市歩く博物館のコースの紹介をしています。
         </p>
         <div>
-          <PleaseText />
-        </div>
-        <div>
           <h3 className="mb-1 p-1 text-center font-medium text-blue-900 text-xl">
             コース一覧 （全24コース中 {courses.length}コース）
           </h3>
@@ -49,7 +45,7 @@ const Home = async () => {
           >
             コース一覧
           </Link>
-          {/*<CourseList courses={courses}></CourseList>*/}
+          <CourseList courses={courses}></CourseList>
         </div>
         <div>
           <h3 className="mb-1 p-1 text-center font-medium text-blue-900 text-xl">

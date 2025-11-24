@@ -5,6 +5,9 @@ import { Marker, Polyline, Popup } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
 import { Prisma } from "@prisma/client";
 import { AnimatedPolyline, MovingMarker } from "./mapUtils";
+import WalkedButton from "./Walked";
+import { Overview } from "../location/Overview";
+import Link from "next/link";
 
 // Prisma型 (types/course.ts などに分離推奨)
 type Course = Prisma.CourseGetPayload<{
@@ -87,7 +90,14 @@ export function MapLayers({
         });
         return (
           <Marker position={toLatLng(loc.place)} icon={icon} key={`loc-${i}`}>
-            <Popup>{loc.title}</Popup>
+            <Popup>
+              <div className="flex flex-col justify-around gap-4">
+                <h2 className="font-medium text-lg md:text-2xl text-center text-balance cursor-pointer hover:underline line-clamp-2 !text-black">
+                  <Link href={`/location/${loc.id}`}>{loc.title}</Link>
+                </h2>
+                <WalkedButton location={{ ...loc, course }} />
+              </div>
+            </Popup>
           </Marker>
         );
       })}

@@ -5,6 +5,7 @@ import { CourseGetById, CoursesGet } from "@/data/courses";
 import LetsStart from "@/components/course/LetsStart";
 import React from "react";
 import Link from "next/link";
+import WalkedButton from "@/components/map/Walked";
 
 const courses = await CoursesGet();
 
@@ -40,7 +41,7 @@ export default async function Course({
             <li key={index}>
               <div className="w-full p-2">
                 <Overview location={location}>
-                  <div></div>
+                  <WalkedButton location={location} />
                 </Overview>
               </div>
             </li>

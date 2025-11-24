@@ -1,7 +1,6 @@
 "use client";
 import type { Prisma } from "@prisma/client";
 import Link from "next/link";
-import PleaseText from "../PleaseText";
 
 type Course = Prisma.CourseGetPayload<{
   include: {
@@ -45,7 +44,7 @@ export default function LetsStart({ course }: { course: Course }) {
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="mb-1 p-1 text-center font-medium text-blue-900 text-xl">
-              スタート地点に行く
+              スタート地点
             </h3>
             <div className="flex py-1 content-center justify-around flex-wrap items-center gap-1">
               <h4 className="font-bold text-gray-700 text-sm">
@@ -60,21 +59,16 @@ export default function LetsStart({ course }: { course: Course }) {
                 </li>
               </ul>
             </div>
-            <PleaseText />
             <div>
-              <p className="text-center">スタート地点に着いたら...</p>
               <div className="flex justify-center py-1.5">
                 <Link
                   href={`/map/${course.id}`}
                   className="py-1.5 px-6 bg-blue-600 text-white rounded-full  text-center"
                   onClick={() => setIsOpen(true)}
                 >
-                  案内開始
+                  マップを開く
                 </Link>
               </div>
-              <p className="text-sm text-center">
-                （{course.name}ルートのマップが開きます）
-              </p>
             </div>
           </div>
         </div>

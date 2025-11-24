@@ -22,8 +22,6 @@ const WalkedButton: React.FC<WalkedButtonProps> = ({ location }) => {
   const [pending, setPending] = useState(false);
   const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
 
-  console.log(items);
-
   const handleClick = async () => {
     setPending(true);
     const user = await GetUser().catch((err) => null);
