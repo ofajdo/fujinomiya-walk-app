@@ -11,7 +11,7 @@ import { GetUser } from "@/actions/user";
 
 export function Logo() {
   return (
-    <div className="max-w-56 w-full">
+    <div className="max-w-40 w-full">
       <h1>
         <Link href="/">
           <Image src={logoImg} alt="富士宮歩く博物館" />
@@ -36,7 +36,7 @@ export function NavItem({
     <div className="flex-1 text-center relative">
       <Link
         href={href}
-        className="peer flex justify-center items-center hover:underline gap-1"
+        className="peer flex justify-center items-center hover:underline gap-1 text-nowrap"
       >
         {icon}
         {label}
@@ -139,8 +139,8 @@ export async function AccountMenu() {
 
 export function Header() {
   return (
-    <div className="sm:sticky py-2 top-2">
-      <div className="backdrop-blur-md bg-opacity-50 bg-gray-300 flex justify-around items-center shadow-md z-[2000] flex-wrap p-2 rounded-full bg-[url(/header_back.svg)] bg-[center_bottom] bg-contain bg-no-repeat">
+    <div className="sm:sticky py-2 top-2 z-[2000]">
+      <div className="backdrop-blur-md bg-opacity-50 bg-gray-300 flex justify-around items-center shadow-md flex-wrap p-2 rounded-full bg-[url(/header_back.svg)] bg-[center_bottom] bg-contain bg-no-repeat">
         <Logo />
         <div className="flex justify-around flex-wrap flex-grow font-medium items-center">
           <CourseMenu />

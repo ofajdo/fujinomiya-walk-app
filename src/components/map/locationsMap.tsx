@@ -1,15 +1,18 @@
 "use client";
 
 import React from "react";
-import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
+import { MapContainer, TileLayer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L, { LatLngExpression } from "leaflet";
-
+import { LatLngExpression } from "leaflet";
 import { Prisma } from "@prisma/client";
 
+// 分離したコンポーネントをインポート
+import { LocationMarkers } from "./LocationMarkers"; // 作成したコンポーネント
+
+// Prisma型 (types/course.ts などに分離推奨)
 type Course = Prisma.CourseGetPayload<{
   include: {
-    routes: true;
+    routes: true; // このマップでは使わないが型定義は合わせておく
     locations: {
       include: {
         place: true;
@@ -18,6 +21,13 @@ type Course = Prisma.CourseGetPayload<{
   };
 }>;
 
+// ヘルパー関数 (lib/mapUtils.ts などに分離推奨)
+const toLatLng = (place: { latitude: string; longitude: string } | null) =>
+  [
+    Number(place?.latitude || "35.222"), // フォールバック緯度
+    Number(place?.longitude || "138.621"), // フォールバック経度
+  ] as LatLngExpression;
+
 function RouteMap({
   course,
   location_index,
@@ -25,23 +35,18 @@ function RouteMap({
   course: Course;
   location_index: number;
 }) {
-  const route: LatLngExpression[] = course.routes.map((place) => [
-    Number(place.latitude),
-    Number(place.longitude),
-  ]);
+  // --- データ整形 ---
 
-  const ToLatLng = (place: { latitude: string; longitude: string }) =>
-    [
-      Number(place?.latitude || "35.222091619682374"),
-      Number(place?.longitude || "138.62160835395053"),
-    ] as LatLngExpression;
+  // 中心座標の計算
+  const centerPlace =
+    course.locations.find((location) => location.number === location_index)
+      ?.place || null;
+
+  const centerPosition = toLatLng(centerPlace);
 
   return (
     <MapContainer
-      center={ToLatLng(
-        course.locations.find((location) => location.number === location_index)
-          ?.place!
-      )}
+      center={centerPosition}
       minZoom={10}
       maxZoom={18}
       zoom={18}
@@ -52,23 +57,10 @@ function RouteMap({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
 
-      {course.locations.map((location, index) => {
-        if (!location.place) return null;
-        const icon = L.divIcon({
-          html: `${location.number}`,
-          className:
-            "rounded-full bg-gray-700 text-white text-lg font-mono text-center leading-[24px]",
-          iconSize: [24, 24],
-          iconAnchor: [12, 12],
-        });
-        return (
-          <Marker position={ToLatLng(location.place)} icon={icon} key={index}>
-            <Popup>
-              <div>{location.title}</div>
-            </Popup>
-          </Marker>
-        );
-      })}
+      {/* マーカーの描画ロジックをコンポーネントに委譲
+        このマップは訪問済み状態を考慮しないため、visitedItems は渡さない
+      */}
+      <LocationMarkers locations={course.locations} />
     </MapContainer>
   );
 }

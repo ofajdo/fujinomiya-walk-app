@@ -40,13 +40,7 @@ export default async function Course({
             <li key={index}>
               <div className="w-full p-2">
                 <Overview location={location}>
-                  <div>
-                    <Link
-                      href={`https://www.google.com/maps/@?api=1&map_action=map&center=${location.place?.latitude},${location.place?.longitude}&zoom=18`}
-                    >
-                      Googleマップで開く
-                    </Link>
-                  </div>
+                  <div></div>
                 </Overview>
               </div>
             </li>

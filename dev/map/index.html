@@ -155,6 +155,7 @@
         "https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
         {
           attribution: "地理院地図",
+          maxZoom: 18,
         }
       );
 
@@ -162,6 +163,7 @@
         "http://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
         {
           attribution: "Google Maps",
+          maxZoom: 19,
         }
       );
 
@@ -169,6 +171,7 @@
         "http://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
         {
           attribution: "Google Satellite",
+          maxZoom: 19,
         }
       );
 
@@ -178,19 +181,7 @@
         {
           attribution:
             "Tiles &copy; Esri &mdash; Source: Esri, Earthstar Geographics",
-          maxZoom: 19,
-        }
-      );
-
-      // Mapbox Satellite (要アクセストークン)
-      const mapboxToken = ""; // ここにアクセストークンを設定
-      const mapboxSat = L.tileLayer(
-        "https://api.mapbox.com/styles/v1/mapbox/satellite-v9/tiles/256/{z}/{x}/{y}?access_token=" +
-          mapboxToken,
-        {
-          attribution:
-            'Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>',
-          maxZoom: 19,
+          maxZoom: 18,
         }
       );
 
@@ -205,7 +196,7 @@
 
       // ====== 地図初期化 ======
       const map = L.map("map", {
-        center: [35.681236, 139.767125],
+        center: [35.221193, 138.614824],
         zoom: 13,
         layers: [osm],
       });
@@ -218,7 +209,6 @@
         "Google Maps": gmap,
         "Google 航空写真": gsat,
         "Esri 衛星写真": esriSat,
-        "Mapbox 衛星写真": mapboxSat,
         国土地理院写真画像: gsiOrtho,
       };
       L.control.layers(baseMaps).addTo(map);

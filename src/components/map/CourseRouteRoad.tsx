@@ -20,7 +20,7 @@ type Course = Prisma.CourseGetPayload<{
 export function CourseRouteRoad({ course }: { course: Course }) {
   const Map = React.useMemo(
     () =>
-      dynamic(() => import("./LocationsRouteMap"), {
+      dynamic(() => import("./RouteMap"), {
         loading: () => <p>A map is loading</p>,
         ssr: false,
       }),

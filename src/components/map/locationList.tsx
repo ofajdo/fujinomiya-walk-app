@@ -9,10 +9,6 @@ import { locationsDB } from "@/lib/localdb";
 
 import { useLiveQuery } from "dexie-react-hooks";
 
-import { DeleteUserLocation } from "@/data/users";
-
-import { GetUser } from "@/actions/user";
-
 type Location = Prisma.LocationGetPayload<{
   include: {
     course: true;
@@ -54,25 +50,7 @@ const LocationList = ({ course }: { course: Course | null }) => {
           >
             <div className={`w-full p-2`}>
               <Overview location={location}>
-                <WalkedButton
-                  location={location}
-                  onWalked={async () => {
-                    const user = await GetUser().catch((err) => null);
-                    if (items?.some((loc) => loc.id === location.id)) {
-                      locationsDB.items.delete(location.id);
-                      if (user?.id)
-                        await DeleteUserLocation({
-                          id: location.id,
-                          user: user.id,
-                        }).catch(() => null);
-                    } else {
-                      locationsDB.items.add({ id: location.id });
-                    }
-                  }}
-                  walked={
-                    !!items?.some((loc) => loc.id === location.id) || false
-                  }
-                />
+                <WalkedButton location={location} />
               </Overview>
             </div>
           </li>
