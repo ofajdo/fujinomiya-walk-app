@@ -52,13 +52,6 @@ function RouteMap({ course }: { course: Course }) {
 
   return (
     <div className="h-full w-full relative">
-      <button
-        onClick={handleStartTracking}
-        className="absolute z-[1000] top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded shadow"
-      >
-        現在地を表示
-      </button>
-
       <MapContainer
         center={initialCenter}
         zoom={16}
@@ -70,6 +63,13 @@ function RouteMap({ course }: { course: Course }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
         />
+
+        <button
+          onClick={handleStartTracking}
+          className="absolute z-[1000] top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded shadow"
+        >
+          現在地を表示
+        </button>
 
         <FullscreenControl />
 

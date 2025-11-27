@@ -40,7 +40,7 @@ const CourseMap: React.FC<CourseMapProps> = ({ course }) => {
       </div>
 
       <div
-        className={`flex-2 h-full w-full max-h-96 overflow-y-scroll sm:max-w-md sm:max-h-full`}
+        className={`flex-1 h-full w-full max-h-96 overflow-y-scroll sm:max-w-md sm:max-h-full`}
       >
         <div className="p-1">{course && <CourseItem course={course} />}</div>
         <LocationList course={course} />
