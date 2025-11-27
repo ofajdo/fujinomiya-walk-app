@@ -6,7 +6,6 @@ import L, { LatLngExpression } from "leaflet";
 import { Prisma } from "@prisma/client";
 import { AnimatedPolyline, MovingMarker } from "./mapUtils";
 import WalkedButton from "./Walked";
-import { Overview } from "../location/Overview";
 import Link from "next/link";
 
 // Prisma型 (types/course.ts などに分離推奨)
@@ -41,6 +40,7 @@ export function MapLayers({
   heading,
 }: MapLayersProps) {
   // データ整形
+
   const route: LatLngExpression[] = course.routes.map((r) => [
     Number(r.latitude),
     Number(r.longitude),

@@ -6,8 +6,13 @@ import "leaflet/dist/leaflet.css";
 import { LatLngExpression } from "leaflet";
 import { Prisma } from "@prisma/client";
 
+import "leaflet/dist/leaflet.css";
+import "leaflet.fullscreen";
+import "leaflet.fullscreen/Control.FullScreen.css";
+
 // 分離したコンポーネントをインポート
 import { LocationMarkers } from "./LocationMarkers"; // 作成したコンポーネント
+import { FullscreenControl } from "./hooks/useFullscreen";
 
 // Prisma型 (types/course.ts などに分離推奨)
 type Course = Prisma.CourseGetPayload<{
@@ -56,6 +61,7 @@ function RouteMap({
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
+      <FullscreenControl />
 
       {/* マーカーの描画ロジックをコンポーネントに委譲
         このマップは訪問済み状態を考慮しないため、visitedItems は渡さない

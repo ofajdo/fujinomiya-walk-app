@@ -33,37 +33,14 @@ type CourseMapProps = {
 };
 
 const CourseMap: React.FC<CourseMapProps> = ({ course }) => {
-  const [open, setOpen] = useState(true);
-
   return (
     <>
       <div className="w-full h-full flex-1">
         {course && <CourseRouteRoad course={course} />}
       </div>
 
-      <button
-        className="bg-gray-200 flex justify-center sm:flex-col"
-        onClick={() => {
-          if (open) {
-            setOpen(false);
-          } else {
-            setOpen(true);
-          }
-        }}
-      >
-        <div className="sm:rotate-90">
-          <div className={`${open && "rotate-180"}`}>
-            <TiArrowSortedUp className="text-2xl" />
-          </div>
-        </div>
-      </button>
-
       <div
-        className={`flex-1 h-full w-full ${
-          open ? "max-h-70" : "max-h-10"
-        } overflow-y-scroll ${
-          open ? "sm:max-w-md" : "sm:hidden"
-        }  sm:max-h-full`}
+        className={`flex-2 h-full w-full max-h-96 overflow-y-scroll sm:max-w-md sm:max-h-full`}
       >
         <div className="p-1">{course && <CourseItem course={course} />}</div>
         <LocationList course={course} />

@@ -8,11 +8,16 @@ import "leaflet/dist/leaflet.css";
 import { LatLngExpression } from "leaflet";
 import { Prisma } from "@prisma/client";
 
+import "leaflet/dist/leaflet.css";
+import "leaflet.fullscreen";
+import "leaflet.fullscreen/Control.FullScreen.css";
+
 // 分離したフックとコンポーネントをインポート
 import { useGeolocation } from "./hooks/useGeolocation";
 import { useOrientation } from "./hooks/useOrientation";
 import { ChangeMapCenter, StopTrackingOnMove } from "./mapUtils";
 import { MapLayers } from "./mapRouteLayers";
+import { FullscreenControl } from "./hooks/useFullscreen";
 
 // Prisma型 (types/course.ts などに分離推奨)
 type Course = Prisma.CourseGetPayload<{
@@ -65,6 +70,8 @@ function RouteMap({ course }: { course: Course }) {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
         />
+
+        <FullscreenControl />
 
         {/* マップ操作コンポーネント */}
         <StopTrackingOnMove setOnTracking={setOnTracking} />
