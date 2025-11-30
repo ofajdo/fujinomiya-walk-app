@@ -58,7 +58,7 @@ export const MapClient = ({
       style:
         "https://api.maptiler.com/maps/base-v4/style.json?key=ylcgFCpLu3EKnFshv302",
       center: center,
-      zoom: 15,
+      zoom: 14,
     });
 
     mapRef.current = map;
@@ -73,7 +73,7 @@ export const MapClient = ({
       showUserLocation: true,
       showAccuracyCircle: true,
       fitBoundsOptions: {
-        maxZoom: 18,
+        maxZoom: 17,
       },
     });
     const compass = new CompassControl();
