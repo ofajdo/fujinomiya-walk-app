@@ -4,6 +4,19 @@ import React, { useState, useEffect, useRef } from "react";
 import { Marker, Polyline, useMap, useMapEvents } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
 
+// 地図操作で追跡解除
+export function StopTrackingOnMove({
+  setOnTracking,
+}: {
+  setOnTracking: (v: boolean) => void;
+}) {
+  useMapEvents({
+    dragstart: () => setOnTracking(false),
+    zoomstart: () => setOnTracking(false),
+  });
+  return null;
+}
+
 // 地図の中心を動的に追従
 export function ChangeMapCenter({
   position,
@@ -16,19 +29,6 @@ export function ChangeMapCenter({
   useEffect(() => {
     if (position && onTracking) map.panTo(position);
   }, [map, position, onTracking]);
-  return null;
-}
-
-// 地図操作で追跡解除
-export function StopTrackingOnMove({
-  setOnTracking,
-}: {
-  setOnTracking: (v: boolean) => void;
-}) {
-  useMapEvents({
-    dragstart: () => setOnTracking(false),
-    zoomstart: () => setOnTracking(false),
-  });
   return null;
 }
 
@@ -86,3 +86,21 @@ export function AnimatedPolyline({ route }: { route: LatLngExpression[] }) {
     />
   );
 }
+
+export const FullscreenControl = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    const control = (L as any).control.fullscreen({
+      position: "topleft",
+      // 必要に応じてオプション
+    });
+    control.addTo(map);
+
+    return () => {
+      map.removeControl(control);
+    };
+  }, [map]);
+
+  return null;
+};

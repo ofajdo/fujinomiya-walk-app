@@ -5,7 +5,7 @@ import { Marker, Polyline, Popup } from "react-leaflet";
 import L, { LatLngExpression } from "leaflet";
 import { Prisma } from "@prisma/client";
 import { AnimatedPolyline, MovingMarker } from "./mapUtils";
-import WalkedButton from "./Walked";
+import WalkedButton from "../Walked";
 import Link from "next/link";
 
 // Prisma型 (types/course.ts などに分離推奨)

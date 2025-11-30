@@ -139,7 +139,7 @@ export async function AccountMenu() {
 
 export function Header() {
   return (
-    <div className="sm:sticky py-2 top-2 z-[2000]">
+    <div className="sm:sticky py-2 top-2 z-20">
       <div className="backdrop-blur-md bg-opacity-50 bg-gray-300 flex justify-around items-center shadow-md flex-wrap p-2 rounded-full bg-[url(/header_back.svg)] bg-[center_bottom] bg-contain bg-no-repeat">
         <Logo />
         <div className="flex justify-around flex-wrap flex-grow font-medium items-center">

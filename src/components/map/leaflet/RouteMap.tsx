@@ -12,14 +12,12 @@ import "leaflet/dist/leaflet.css";
 import "leaflet.fullscreen";
 import "leaflet.fullscreen/Control.FullScreen.css";
 
-// 分離したフックとコンポーネントをインポート
 import { useGeolocation } from "./hooks/useGeolocation";
 import { useOrientation } from "./hooks/useOrientation";
 import { ChangeMapCenter, StopTrackingOnMove } from "./mapUtils";
 import { MapLayers } from "./mapRouteLayers";
-import { FullscreenControl } from "./hooks/useFullscreen";
+import { FullscreenControl } from "./mapUtils";
 
-// Prisma型 (types/course.ts などに分離推奨)
 type Course = Prisma.CourseGetPayload<{
   include: {
     routes: true;
@@ -33,22 +31,19 @@ type Course = Prisma.CourseGetPayload<{
 }>;
 
 function RouteMap({ course }: { course: Course }) {
-  // --- データとロジックの呼び出し ---
   const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
   const { onTracking, setOnTracking, currentPosition, startGeolocation } =
     useGeolocation();
   const { heading, requestPermission } = useOrientation();
 
-  // --- イベントハンドラ ---
   const handleStartTracking = () => {
-    startGeolocation(); // 位置情報取得開始
-    requestPermission(); // 方位センサー権限要求 (フック内でUA判定済み)
+    startGeolocation();
+    requestPermission();
   };
 
-  // --- 初期値の計算 ---
   const initialCenter: LatLngExpression = course.routes.length
     ? [Number(course.routes[0].latitude), Number(course.routes[0].longitude)]
-    : [35.681, 139.767]; // フォールバック (例: 東京駅)
+    : [35.681, 139.767];
 
   return (
     <div className="h-full w-full relative">
@@ -73,11 +68,9 @@ function RouteMap({ course }: { course: Course }) {
 
         <FullscreenControl />
 
-        {/* マップ操作コンポーネント */}
         <StopTrackingOnMove setOnTracking={setOnTracking} />
         <ChangeMapCenter position={currentPosition} onTracking={onTracking} />
 
-        {/* マップレイヤー（マーカーやポリライン） */}
         <MapLayers
           course={course}
           items={items}

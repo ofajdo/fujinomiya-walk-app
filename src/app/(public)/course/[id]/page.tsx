@@ -1,6 +1,6 @@
 import { CourseItem } from "@/components/course/CourseItem";
 import { Overview } from "@/components/location/Overview";
-import { CourseRouteRoad } from "@/components/map/CourseRouteRoad";
+import { CourseRouteRoad } from "@/components/map/leaflet/CourseRouteRoad";
 import { CourseGetById, CoursesGet } from "@/data/courses";
 import LetsStart from "@/components/course/LetsStart";
 import React from "react";

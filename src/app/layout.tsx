@@ -25,8 +25,9 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body suppressHydrationWarning className={notoSansJP.className}>
-        <SyncUserLocation>{children}</SyncUserLocation>
-        <Analytics />
+        {/* <SyncUserLocation>{children}</SyncUserLocation>
+        <Analytics /> */}
+        {children}
       </body>
     </html>
   );

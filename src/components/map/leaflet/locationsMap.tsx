@@ -10,14 +10,12 @@ import "leaflet/dist/leaflet.css";
 import "leaflet.fullscreen";
 import "leaflet.fullscreen/Control.FullScreen.css";
 
-// 分離したコンポーネントをインポート
-import { LocationMarkers } from "./LocationMarkers"; // 作成したコンポーネント
-import { FullscreenControl } from "./hooks/useFullscreen";
+import { LocationMarkers } from "./LocationMarkers";
+import { FullscreenControl } from "./mapUtils";
 
-// Prisma型 (types/course.ts などに分離推奨)
 type Course = Prisma.CourseGetPayload<{
   include: {
-    routes: true; // このマップでは使わないが型定義は合わせておく
+    routes: true;
     locations: {
       include: {
         place: true;
@@ -29,8 +27,8 @@ type Course = Prisma.CourseGetPayload<{
 // ヘルパー関数 (lib/mapUtils.ts などに分離推奨)
 const toLatLng = (place: { latitude: string; longitude: string } | null) =>
   [
-    Number(place?.latitude || "35.222"), // フォールバック緯度
-    Number(place?.longitude || "138.621"), // フォールバック経度
+    Number(place?.latitude || "35.222"),
+    Number(place?.longitude || "138.621"),
   ] as LatLngExpression;
 
 function RouteMap({
@@ -40,9 +38,6 @@ function RouteMap({
   course: Course;
   location_index: number;
 }) {
-  // --- データ整形 ---
-
-  // 中心座標の計算
   const centerPlace =
     course.locations.find((location) => location.number === location_index)
       ?.place || null;
@@ -62,10 +57,6 @@ function RouteMap({
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <FullscreenControl />
-
-      {/* マーカーの描画ロジックをコンポーネントに委譲
-        このマップは訪問済み状態を考慮しないため、visitedItems は渡さない
-      */}
       <LocationMarkers locations={course.locations} />
     </MapContainer>
   );

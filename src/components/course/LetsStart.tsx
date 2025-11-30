@@ -36,7 +36,7 @@ export default function LetsStart({ course }: { course: Course }) {
       </div>
       {isOpen && (
         <div
-          className="fixed p-4 inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[2050]"
+          className="fixed p-4 inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           onClick={() => setIsOpen(false)}
         >
           <div

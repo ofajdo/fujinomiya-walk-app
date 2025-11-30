@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
@@ -16,17 +16,20 @@
     "dexie": "^4.2.0",
     "dexie-react-hooks": "^1.1.7",
     "leaflet.fullscreen": "^4.0.0",
+    "maplibre-gl": "^5.13.0",
     "next": "^15.5.4",
     "next-auth": "^5.0.0-beta.29",
     "next-nprogress-bar": "^2.4.7",
     "react": "19.1.1",
     "react-dom": "19.1.1",
     "react-icons": "^5.5.0",
-    "react-leaflet": "^5.0.0"
+    "react-leaflet": "^5.0.0",
+    "react-map-gl": "^8.1.0"
   },
   "devDependencies": {
     "@prisma/client": "^6.14.0",
     "@types/leaflet": "^1.9.20",
+    "@types/maplibre-gl": "^1.14.0",
     "@types/node": "^22",
     "@types/react": "19.1.9",
     "@types/react-dom": "19.1.7",

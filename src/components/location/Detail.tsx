@@ -4,7 +4,7 @@ import { Overview } from "./Overview";
 
 import { Prisma } from "@prisma/client";
 
-import { LocationsRoad } from "../map/LocationsMapLoad";
+import { LocationsRoad } from "../map/leaflet/LocationsMapLoad";
 
 type Location = Prisma.LocationGetPayload<{
   include: {

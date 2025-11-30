@@ -25,7 +25,7 @@ export function Overview({
   return (
     <div className="relative">
       {!!items?.some((loc) => loc.id === location.id) && (
-        <div className="absolute top-0 left-0 bg-lime-400 h-full w-2 z-30">
+        <div className="absolute top-0 left-0 bg-lime-400 h-full w-2 z-10">
           <div></div>
         </div>
       )}
@@ -63,7 +63,7 @@ export function Overview({
       </div>
       {isOpen && (
         <div
-          className="fixed p-4 inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[2500]"
+          className="fixed p-4 inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
           onClick={() => setIsOpen(false)}
         >
           <div
