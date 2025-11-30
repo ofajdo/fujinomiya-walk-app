@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --experimental-https",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
@@ -17,6 +17,7 @@
     "dexie-react-hooks": "^1.1.7",
     "leaflet.fullscreen": "^4.0.0",
     "maplibre-gl": "^5.13.0",
+    "maplibre-gl-compass": "^0.3.1",
     "next": "^15.5.4",
     "next-auth": "^5.0.0-beta.29",
     "next-nprogress-bar": "^2.4.7",

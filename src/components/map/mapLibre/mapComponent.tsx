@@ -11,6 +11,8 @@ import maplibregl, {
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Prisma } from "@prisma/client";
 
+import { CompassControl } from "maplibre-gl-compass";
+import "maplibre-gl-compass/style.css";
 import { toLngLat } from "../CourseMap";
 
 type Course = Prisma.CourseGetPayload<{
@@ -61,7 +63,7 @@ export const MapClient = ({
 
     mapRef.current = map;
 
-    map.addControl(new NavigationControl(), "top-left");
+    map.addControl(new NavigationControl({ showCompass: false }), "top-left");
 
     const geolocate = new GeolocateControl({
       positionOptions: {
@@ -71,12 +73,32 @@ export const MapClient = ({
       showUserLocation: true,
       showAccuracyCircle: true,
       fitBoundsOptions: {
-        maxZoom: 28,
+        maxZoom: 18,
       },
     });
+    const compass = new CompassControl();
 
     map.addControl(new FullscreenControl(), "top-left");
     map.addControl(geolocate, "top-left");
+    map.addControl(compass, "top-left");
+
+    compass.on("turnon", () => {
+      // コンパスを押したときに、ジオロケーションを有効にする
+      if (geolocate._watchState !== "ACTIVE_LOCK") {
+        geolocate.trigger();
+      }
+    });
+    geolocate.on("userlocationlostfocus", () => {
+      // NOTE: コンパスが向きを設定 (setBearing) すると自動トラッキングが OFF になるため、ユーザー操作でない変更時は再度 ON にする
+      if (!isOperating) {
+        geolocate.trigger();
+      }
+    });
+
+    // STEP3: 上記の userlocationlostfocus が発火した時、ユーザー操作起因かどうかを判断するためのフラグを管理する
+    let isOperating = false;
+    map.on("touchstart", () => (isOperating = true));
+    map.on("touchend", () => (isOperating = false));
 
     map.on("load", () => {
       // contentsの戻り値（クリーンアップ関数）を保存
