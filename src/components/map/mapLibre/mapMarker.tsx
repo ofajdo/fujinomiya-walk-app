@@ -11,10 +11,10 @@ interface CircleMarker {
   onClick: () => void; // クリック時の関数
 }
 const MARKER_CONFIG = {
-  size: 24,
+  size: 32,
   scale: 2,
   strokeWidth: 3,
-  fontSize: 20,
+  fontSize: 24,
   cornerRadius: 15,
   widthPerChar: 15, // 3文字以上の場合、1文字ごとに追加する幅
   horizontalPadding: 10, // 左右の余白
@@ -101,6 +101,7 @@ const generateMarkerSVG = (
           font-size="${fontSize}" 
           font-weight="bold" 
           fill="white"
+          font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic UI', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif"
         >${marker.text}</text>
       </svg>
     `;
@@ -126,6 +127,7 @@ const generateMarkerSVG = (
           font-size="${fontSize}" 
           font-weight="bold" 
           fill="white"
+          font-family="-apple-system, BlinkMacSystemFont, 'Hiragino Sans', 'Yu Gothic UI', 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif"
         >${marker.text}</text>
       </svg>
     `;
