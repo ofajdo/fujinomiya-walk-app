@@ -31,14 +31,14 @@ const WalkedButton: React.FC<WalkedButtonProps> = ({
     setPending(true);
     const user = await GetUser().catch((err) => null);
     if (items?.some((loc) => loc.id === location.id)) {
-      locationsDB.items.delete(location.id);
+      await locationsDB.items.delete(location.id);
       if (user?.id)
         await DeleteUserLocation({
           id: location.id,
           user: user.id,
         }).catch(() => null);
     } else {
-      locationsDB.items.add({ id: location.id });
+      await locationsDB.items.add({ id: location.id });
     }
 
     setTimeout(() => setPending(false), 500); // 0.5秒後に元に戻す（必要に応じて調整）

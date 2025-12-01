@@ -59,7 +59,6 @@ const CourseMap: React.FC<CourseMapProps> = ({ course }) => {
       color: items?.some((v) => v.id === location.id) ? "#aaa" : "#333",
       onClick: async () => {
         const user = await GetUser().catch((err) => null);
-        setCenter(toLngLat(location.place));
         if (items?.some((loc) => loc.id === location.id)) {
           locationsDB.items.delete(location.id);
           if (user?.id)
@@ -68,8 +67,9 @@ const CourseMap: React.FC<CourseMapProps> = ({ course }) => {
               user: user.id,
             }).catch(() => null);
         } else {
-          locationsDB.items.add({ id: location.id });
+          await locationsDB.items.add({ id: location.id });
         }
+        setCenter(toLngLat(location.place));
       },
     };
   });
