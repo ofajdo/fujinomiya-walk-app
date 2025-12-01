@@ -33,7 +33,13 @@ type Course = Prisma.CourseGetPayload<{
   };
 }>;
 
-const LocationList = ({ course }: { course: Course | null }) => {
+const LocationList = ({
+  course,
+  onWalked,
+}: {
+  course: Course | null;
+  onWalked: (lcoation: any) => void;
+}) => {
   const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
 
   return (
@@ -50,7 +56,7 @@ const LocationList = ({ course }: { course: Course | null }) => {
           >
             <div className={`w-full p-2`}>
               <Overview location={location}>
-                <WalkedButton location={location} />
+                <WalkedButton location={location} onWalked={onWalked} />
               </Overview>
             </div>
           </li>

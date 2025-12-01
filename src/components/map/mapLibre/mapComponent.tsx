@@ -58,7 +58,7 @@ export const MapClient = ({
       style:
         "https://api.maptiler.com/maps/base-v4/style.json?key=ylcgFCpLu3EKnFshv302",
       center: center,
-      zoom: 14,
+      zoom: 16,
     });
 
     mapRef.current = map;

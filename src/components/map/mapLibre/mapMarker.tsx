@@ -14,10 +14,10 @@ const MARKER_CONFIG = {
   size: 32,
   scale: 2,
   strokeWidth: 3,
-  fontSize: 24,
+  fontSize: 32,
   cornerRadius: 15,
-  widthPerChar: 24, // 3文字以上の場合、1文字ごとに追加する幅
-  horizontalPadding: 10, // 左右の余白
+  widthPerChar: 32, // 3文字以上の場合、1文字ごとに追加する幅
+  horizontalPadding: 24, // 左右の余白
 } as const;
 
 /**

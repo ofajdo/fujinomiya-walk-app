@@ -6,6 +6,7 @@ import { locationsDB } from "@/lib/localdb";
 import { useLiveQuery } from "dexie-react-hooks";
 import { DeleteUserLocation } from "@/data/users";
 import { GetUser } from "@/actions/user";
+import { toLngLat } from "./CourseMap";
 
 type location = Prisma.LocationGetPayload<{
   include: {
@@ -16,9 +17,13 @@ type location = Prisma.LocationGetPayload<{
 
 type WalkedButtonProps = {
   location: location;
+  onWalked: (lcoation: any) => void;
 };
 
-const WalkedButton: React.FC<WalkedButtonProps> = ({ location }) => {
+const WalkedButton: React.FC<WalkedButtonProps> = ({
+  location,
+  onWalked = () => {},
+}) => {
   const [pending, setPending] = useState(false);
   const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
 
@@ -37,6 +42,7 @@ const WalkedButton: React.FC<WalkedButtonProps> = ({ location }) => {
     }
 
     setTimeout(() => setPending(false), 500); // 0.5秒後に元に戻す（必要に応じて調整）
+    onWalked(toLngLat(location.place));
   };
 
   let buttonClass = "py-1.5 px-3 text-sm font-medium text-white rounded-full";

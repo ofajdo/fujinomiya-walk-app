@@ -10,7 +10,9 @@ import "maplibre-gl/dist/maplibre-gl.css";
 import { addCircleMarkers } from "./mapLibre/mapMarker";
 import { useLiveQuery } from "dexie-react-hooks";
 import { locationsDB } from "@/lib/localdb";
-import { CourseRouteRoad } from "./leaflet/CourseRouteRoad";
+//import { CourseRouteRoad } from "./leaflet/CourseRouteRoad";
+import { GetUser } from "@/actions/user";
+import { DeleteUserLocation } from "@/data/users";
 
 type Course = Prisma.CourseGetPayload<{
   include: {
@@ -47,19 +49,32 @@ export const toLngLat = (
 const CourseMap: React.FC<CourseMapProps> = ({ course }) => {
   const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
   const courseRoute: number[][] = course.routes.map((route) => toLngLat(route));
+  const startingPoint = course?.startingPoint;
+  const [center, setCenter] = useState<number[] | null>(null);
   const courseData = course.locations.map((location) => {
     return {
       id: location.id,
       position: toLngLat(location.place) as [number, number],
       text: `${location.number}`,
       color: items?.some((v) => v.id === location.id) ? "#aaa" : "#333",
-      onClick: () => {},
+      onClick: async () => {
+        const user = await GetUser().catch((err) => null);
+        setCenter(toLngLat(location.place));
+        if (items?.some((loc) => loc.id === location.id)) {
+          locationsDB.items.delete(location.id);
+          if (user?.id)
+            await DeleteUserLocation({
+              id: location.id,
+              user: user.id,
+            }).catch(() => null);
+        } else {
+          locationsDB.items.add({ id: location.id });
+        }
+      },
     };
   });
-  const startingPoint = course?.startingPoint;
   const Contents = (map: any) => {
     if (!map) return;
-
     const cleanup = CourseLines({ map: map, route: courseRoute });
     const locationsMarkerController = addCircleMarkers(map, [
       ...courseData,
@@ -67,7 +82,7 @@ const CourseMap: React.FC<CourseMapProps> = ({ course }) => {
       {
         id: startingPoint.id,
         position: toLngLat(startingPoint.place) as [number, number],
-        text: `スタート`,
+        text: `スタート／ゴール`,
         color: "#2222ff",
         onClick: () => {},
       },
@@ -82,7 +97,11 @@ const CourseMap: React.FC<CourseMapProps> = ({ course }) => {
       <div className="w-full h-full flex-1">
         {/* {course && <CourseRouteRoad course={course} />} */}
         <MapClient
-          center={toLngLat(startingPoint?.place) as LngLatLike}
+          center={
+            center
+              ? (center as LngLatLike)
+              : (toLngLat(startingPoint.place) as LngLatLike)
+          }
           contents={Contents}
           course={course}
         ></MapClient>
@@ -92,7 +111,12 @@ const CourseMap: React.FC<CourseMapProps> = ({ course }) => {
         className={`flex-1 h-full w-full max-h-96 overflow-y-scroll sm:max-w-md sm:max-h-full`}
       >
         <div className="p-1">{course && <CourseItem course={course} />}</div>
-        <LocationList course={course} />
+        <LocationList
+          course={course}
+          onWalked={(location: any) => {
+            setCenter(location);
+          }}
+        />
       </div>
     </>
   );
