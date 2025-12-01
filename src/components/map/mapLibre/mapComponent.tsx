@@ -117,7 +117,7 @@ export const MapClient = ({
       map.remove();
       mapRef.current = null;
     };
-  }, [center, course]);
+  }, [center, course, contents]);
 
   return (
     <div ref={mapContainerRef} style={{ width: "100%", height: "100%" }} />

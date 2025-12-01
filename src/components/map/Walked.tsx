@@ -17,13 +17,10 @@ type location = Prisma.LocationGetPayload<{
 
 type WalkedButtonProps = {
   location: location;
-  onWalked: (lcoation: any) => void;
+  onWalked?: (lcoation: any) => void;
 };
 
-const WalkedButton: React.FC<WalkedButtonProps> = ({
-  location,
-  onWalked = () => {},
-}) => {
+const WalkedButton: React.FC<WalkedButtonProps> = ({ location, onWalked }) => {
   const [pending, setPending] = useState(false);
   const items = useLiveQuery(() => locationsDB.items.toArray()) || [];
 
@@ -42,7 +39,7 @@ const WalkedButton: React.FC<WalkedButtonProps> = ({
     }
 
     setTimeout(() => setPending(false), 500); // 0.5秒後に元に戻す（必要に応じて調整）
-    onWalked(toLngLat(location.place));
+    onWalked?.(toLngLat(location.place));
   };
 
   let buttonClass = "py-1.5 px-3 text-sm font-medium text-white rounded-full";
