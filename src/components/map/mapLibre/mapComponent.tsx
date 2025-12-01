@@ -56,7 +56,7 @@ export const MapClient = ({
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
       style:
-        "https://api.maptiler.com/maps/base-v4/style.json?key=ylcgFCpLu3EKnFshv302",
+        "https://api.maptiler.com/maps/019ad95c-3966-7e31-84ec-7e186e285757/style.json?key=ylcgFCpLu3EKnFshv3022",
       center: center,
       zoom: 16,
     });
